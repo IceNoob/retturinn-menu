@@ -8,8 +8,9 @@
 @font-face { font-family:'Montserrat'; font-weight:700; src:url('/fonts/Montserrat-700.ttf') format('truetype'); }
 @font-face { font-family:'Montserrat'; font-weight:800; src:url('/fonts/Montserrat-800.ttf') format('truetype'); }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{width:1920px;height:1080px;overflow:hidden;font-family:'Montserrat',sans-serif;background:#fff;}
-.frame{position:relative;width:1920px;height:1080px;overflow:hidden;}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff;}
+body{font-family:'Montserrat',sans-serif;}
+.frame{position:absolute;top:0;left:0;width:1920px;height:1080px;overflow:hidden;transform-origin:top left;}
 
 .bg-orange{position:absolute;left:0;top:0;width:1920px;height:916px;background:#F9890C;}
 
@@ -165,6 +166,16 @@ function render(data) {
     fitWidth(document.getElementById('salat-line'), 24);
   });
 }
+
+function scaleToFit() {
+  const frame = document.querySelector('.frame');
+  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  frame.style.transform = `scale(${scale})`;
+  frame.style.left = ((window.innerWidth - 1920 * scale) / 2) + 'px';
+  frame.style.top = ((window.innerHeight - 1080 * scale) / 2) + 'px';
+}
+scaleToFit();
+window.addEventListener('resize', scaleToFit);
 
 async function init() {
   const slug = todaySlug();
