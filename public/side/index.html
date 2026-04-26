@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face { font-family:'Montserrat'; font-weight:800; src:url('/fonts/Montserrat-800.ttf') format('truetype'); }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:576px;height:950px;overflow:hidden;font-family:'Montserrat',sans-serif;background:#F9890C;}
+.frame{position:relative;width:576px;height:950px;overflow:hidden;}
+
+.slide{
+  position:absolute;top:0;left:0;width:576px;height:950px;
+  opacity:0;transition:opacity 0.8s ease;
+}
+.slide.active{opacity:1;}
+
+.day-name{position:absolute;left:20px;top:33px;color:#fff;font-weight:800;font-size:60px;line-height:1.219em;white-space:nowrap;}
+.date-text{position:absolute;left:10px;top:91px;width:528px;color:#fff;font-weight:800;font-size:96px;line-height:1.281em;overflow:hidden;}
+.dish-text{position:absolute;left:22px;top:223px;width:528px;height:709px;color:#fff;font-weight:800;font-size:128px;line-height:0.961em;text-transform:uppercase;overflow:hidden;word-break:break-all;}
+
+.progress{
+  position:absolute;bottom:0;left:0;width:0%;height:4px;
+  background:rgba(255,255,255,0.5);
+  transition:none;
+}
+</style>
+</head>
+<body>
+<div class="frame" id="frame"></div>
+<script>
+const DAYS = ['manudagur','thridjudagur','midvikudagur','fimmtudagur','fostudagur'];
+const MONTHS = ['janúar','febrúar','mars','apríl','maí','júní','júlí','ágúst','september','október','nóvember','desember'];
+const SLIDE_DURATION = 7000;
+
+function formatDate(d) {
+  if (!d) return '';
+  const [day, month] = d.split('/');
+  return `${parseInt(day)}. ${MONTHS[parseInt(month) - 1]}`;
+}
+
+function splitDish(dish) {
+  if (!dish) return { prefix: '', title: '', desc: '' };
+  const clean = dish.replace(/[.,]\s*$/, '').trim();
+  const qm = clean.match(/^(.{4,}?)\s*[""„]([^"""„]+)[""„]\s*(.*)$/);
+  if (qm) return { prefix: qm[1].trim(), title: qm[2].trim(), desc: qm[3].trim() };
+  for (const sep of [' með ', ' ásamt ']) {
+    const idx = clean.indexOf(sep);
+    if (idx > 2) return { prefix: '', title: clean.substring(0, idx).trim(), desc: clean.substring(idx + 1).trim() };
+  }
+  const ci = clean.indexOf(', ');
+  if (ci > 2) return { prefix: '', title: clean.substring(0, ci).trim(), desc: clean.substring(ci + 2).trim() };
+  return { prefix: '', title: clean, desc: '' };
+}
+
+function ft(d) { return d.prefix ? `${d.prefix} ${d.title}` : d.title; }
+
+function shrinkHeight(el, minPx) {
+  if (!el) return;
+  var fontSize = parseInt(getComputedStyle(el).fontSize);
+  while (el.scrollHeight > el.clientHeight && fontSize > minPx) {
+    fontSize -= 2;
+    el.style.fontSize = fontSize + 'px';
+  }
+}
+
+function scheduleRefreshAtMidnight() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  setTimeout(() => location.reload(), midnight - now);
+}
+
+function buildSlides(menu) {
+  const slides = [];
+  for (const slug of DAYS) {
+    const data = menu[slug];
+    if (!data || !data.dishes) continue;
+    data.dishes.forEach(dish => {
+      const d = splitDish(dish);
+      slides.push({
+        dayName: data.day || '',
+        dateText: formatDate(data.date),
+        dishTitle: ft(d),
+      });
+    });
+  }
+  return slides;
+}
+
+function renderSlides(slides) {
+  const frame = document.getElementById('frame');
+  frame.innerHTML = '';
+
+  slides.forEach((s, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+
+    const dayEl = document.createElement('div');
+    dayEl.className = 'day-name';
+    dayEl.textContent = s.dayName;
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'date-text';
+    dateEl.textContent = s.dateText;
+
+    const dishEl = document.createElement('div');
+    dishEl.className = 'dish-text';
+    dishEl.textContent = s.dishTitle;
+
+    slide.appendChild(dayEl);
+    slide.appendChild(dateEl);
+    slide.appendChild(dishEl);
+    frame.appendChild(slide);
+  });
+
+  const bar = document.createElement('div');
+  bar.className = 'progress';
+  bar.id = 'progress-bar';
+  frame.appendChild(bar);
+
+  document.fonts.ready.then(() => {
+    frame.querySelectorAll('.dish-text').forEach(el => shrinkHeight(el, 36));
+    startCarousel(frame.querySelectorAll('.slide'));
+  });
+}
+
+function startCarousel(slides) {
+  if (!slides.length) return;
+  let current = 0;
+  slides[0].classList.add('active');
+
+  const bar = document.getElementById('progress-bar');
+
+  function animateBar() {
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        bar.style.transition = `width ${SLIDE_DURATION}ms linear`;
+        bar.style.width = '100%';
+      });
+    });
+  }
+
+  animateBar();
+
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+    animateBar();
+  }, SLIDE_DURATION);
+}
+
+async function init() {
+  try {
+    const res = await fetch('/api/menu');
+    const menu = await res.json();
+    const slides = buildSlides(menu);
+    if (slides.length) renderSlides(slides);
+  } catch (e) {
+    console.error('Failed to fetch menu:', e);
+  }
+  scheduleRefreshAtMidnight();
+}
+
+init();
+</script>
+</body>
+</html>

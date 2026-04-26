@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<style>
+@font-face { font-family:'Montserrat'; font-weight:500; src:url('/fonts/Montserrat-500.ttf') format('truetype'); }
+@font-face { font-family:'Montserrat'; font-weight:600; src:url('/fonts/Montserrat-600.ttf') format('truetype'); }
+@font-face { font-family:'Montserrat'; font-weight:700; src:url('/fonts/Montserrat-700.ttf') format('truetype'); }
+@font-face { font-family:'Montserrat'; font-weight:800; src:url('/fonts/Montserrat-800.ttf') format('truetype'); }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:1920px;height:1080px;overflow:hidden;font-family:'Montserrat',sans-serif;background:#fff;}
+.frame{position:relative;width:1920px;height:1080px;overflow:hidden;}
+
+.bg-orange{position:absolute;left:0;top:0;width:1920px;height:916px;background:#F9890C;}
+
+.logo-img{position:absolute;left:1431px;top:16px;width:470px;height:470px;object-fit:contain;}
+
+.day-header{position:absolute;left:58px;top:46px;width:1350px;color:#fff;font-weight:800;font-size:96px;line-height:1.219em;white-space:nowrap;overflow:hidden;}
+
+.dish1-prefix{display:none;position:absolute;left:107px;top:198px;width:1280px;color:rgba(255,255,255,0.85);font-weight:600;font-size:28px;font-style:italic;line-height:1em;}
+.dish1-title{position:absolute;left:107px;top:223px;width:1280px;color:#fff;font-weight:800;font-size:48px;line-height:1em;overflow:hidden;}
+.dish1-desc{position:absolute;left:136px;top:280px;width:1230px;color:#fff;font-weight:500;font-size:30px;line-height:1.333em;overflow:hidden;}
+.dish2-prefix{display:none;position:absolute;left:107px;top:370px;width:1280px;color:rgba(255,255,255,0.85);font-weight:600;font-size:28px;font-style:italic;line-height:1em;}
+.dish2-title{position:absolute;left:107px;top:395px;width:1280px;color:#fff;font-weight:800;font-size:48px;line-height:1em;overflow:hidden;}
+.dish2-desc{position:absolute;left:136px;top:452px;width:1230px;color:#fff;font-weight:500;font-size:30px;line-height:1.333em;overflow:hidden;}
+
+.dish3-wrap{display:none;position:absolute;left:0;top:462px;width:1380px;}
+.dish3-wrap.visible{display:block;}
+.dish3-title{position:absolute;left:107px;top:0;width:1280px;color:#fff;font-weight:800;font-size:40px;line-height:1em;overflow:hidden;white-space:nowrap;}
+.dish3-desc{position:absolute;left:136px;top:48px;width:1230px;color:#fff;font-weight:500;font-size:26px;line-height:1.333em;overflow:hidden;}
+
+.vegan-band{position:absolute;left:-47px;top:545px;width:1173px;height:182px;background:rgba(255,255,255,.25);}
+.chef-img{position:absolute;left:11px;top:554px;width:286px;height:165px;object-fit:cover;}
+.vegan-title{position:absolute;left:287px;top:591px;width:880px;color:#fff;font-weight:800;font-size:48px;line-height:1em;overflow:hidden;white-space:nowrap;}
+.vegan-desc{position:absolute;left:313px;top:647px;width:850px;color:#fff;font-weight:500;font-size:30px;line-height:1.333em;overflow:hidden;}
+
+.soup-box{position:absolute;left:1308px;top:710px;width:579px;height:244px;background:#fff;}
+.soup-label{position:absolute;left:1405px;top:748px;color:#F9890C;font-weight:800;font-size:48px;line-height:1em;white-space:nowrap;}
+.soup-text{position:absolute;left:1371px;top:814px;width:454px;height:112px;color:#F9890C;font-weight:700;font-size:36px;line-height:1.111em;text-align:center;overflow:hidden;}
+
+.star{position:absolute;left:11px;top:768px;width:106px;height:106px;color:#0F9B49;font-size:90px;line-height:106px;text-align:center;}
+.salat-line{position:absolute;left:133px;top:791px;width:966px;color:#fff;font-weight:700;font-size:48px;line-height:1.219em;overflow:hidden;white-space:nowrap;}
+.divider{position:absolute;left:117px;top:850px;width:994px;height:0;border-top:3px solid #fff;}
+
+.fastir-label{position:absolute;left:58px;top:935px;color:#F9890C;font-weight:700;font-size:60px;line-height:1.219em;white-space:nowrap;}
+.fastir-text{position:absolute;left:58px;top:1010px;width:1452px;color:#F9890C;font-weight:600;font-size:30px;line-height:1.333em;overflow:hidden;}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="bg-orange"></div>
+
+  <img class="logo-img" src="/logo.png" />
+  <div class="day-header" id="day-date"></div>
+
+  <div class="dish1-prefix" id="dish1-prefix"></div>
+  <div class="dish1-title" id="dish1-title"></div>
+  <div class="dish1-desc" id="dish1-desc"></div>
+
+  <div class="dish2-prefix" id="dish2-prefix"></div>
+  <div class="dish2-title" id="dish2-title"></div>
+  <div class="dish2-desc" id="dish2-desc"></div>
+
+  <div class="dish3-wrap" id="dish3-wrap">
+    <div class="dish3-title" id="dish3-title"></div>
+    <div class="dish3-desc" id="dish3-desc"></div>
+  </div>
+
+  <div class="vegan-band"></div>
+  <img class="chef-img" src="/chef.png" />
+  <div class="vegan-title" id="vegan-title"></div>
+  <div class="vegan-desc" id="vegan-desc"></div>
+
+  <div class="soup-box"></div>
+  <div class="soup-label">SÚPA DAGSINS</div>
+  <div class="soup-text" id="soup"></div>
+
+  <div class="star">★</div>
+  <div class="salat-line" id="salat-line"></div>
+  <div class="divider"></div>
+
+  <div class="fastir-label">Fastir réttir</div>
+  <div class="fastir-text" id="fixed-dishes"></div>
+</div>
+<script>
+const DAYS = ['manudagur','thridjudagur','midvikudagur','fimmtudagur','fostudagur'];
+const MONTHS = ['janúar','febrúar','mars','apríl','maí','júní','júlí','ágúst','september','október','nóvember','desember'];
+
+function formatDate(d) {
+  if (!d) return '';
+  const [day, month] = d.split('/');
+  return `${parseInt(day)}. ${MONTHS[parseInt(month) - 1]}`;
+}
+
+function splitDish(dish) {
+  if (!dish) return { prefix: '', title: '', desc: '' };
+  const clean = dish.replace(/[.,]\s*$/, '').trim();
+  const qm = clean.match(/^(.{4,}?)\s*[""„]([^"""„]+)[""„]\s*(.*)$/);
+  if (qm) return { prefix: qm[1].trim(), title: qm[2].trim(), desc: qm[3].trim() };
+  for (const sep of [' með ', ' ásamt ']) {
+    const idx = clean.indexOf(sep);
+    if (idx > 2) return { prefix: '', title: clean.substring(0, idx).trim(), desc: clean.substring(idx + 1).trim() };
+  }
+  const ci = clean.indexOf(', ');
+  if (ci > 2) return { prefix: '', title: clean.substring(0, ci).trim(), desc: clean.substring(ci + 2).trim() };
+  return { prefix: '', title: clean, desc: '' };
+}
+
+function ft(d) { return d.prefix ? `${d.prefix} ${d.title}` : d.title; }
+
+function fitWidth(el, minPx) {
+  if (!el) return;
+  while (el.scrollWidth > el.clientWidth && parseFloat(getComputedStyle(el).fontSize) > minPx) {
+    el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) - 1) + 'px';
+  }
+}
+
+function scheduleRefreshAtMidnight() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  setTimeout(() => location.reload(), midnight - now);
+}
+
+function todaySlug() {
+  const dow = new Date().getDay();
+  return (dow >= 1 && dow <= 5) ? DAYS[dow - 1] : 'fostudagur';
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val || '';
+}
+
+function render(data) {
+  const d1 = splitDish(data.dishes?.[0]);
+  const d2 = splitDish(data.dishes?.[1]);
+  const d3 = data.fridaySpecial ? splitDish(data.fridaySpecial) : null;
+  const vegan = splitDish(data.vegan);
+  const dateStr = formatDate(data.date);
+
+  setText('day-date', `${data.day || ''}${dateStr ? '  ' + dateStr : ''}`);
+  setText('soup', data.soup || '');
+  setText('dish1-title', ft(d1));
+  setText('dish1-desc', d1.desc);
+  setText('dish2-title', ft(d2));
+  setText('dish2-desc', d2.desc);
+
+  if (d3) {
+    document.getElementById('dish3-wrap').classList.add('visible');
+    setText('dish3-title', ft(d3));
+    setText('dish3-desc', d3.desc);
+  }
+
+  setText('vegan-title', ft(vegan));
+  setText('vegan-desc', vegan.desc);
+  setText('salat-line', 'Salat vikunnar: ' + (data.saladOfTheWeek || ''));
+  setText('fixed-dishes', data.fixedDishes || '');
+
+  document.fonts.ready.then(() => {
+    fitWidth(document.getElementById('dish1-title'), 24);
+    fitWidth(document.getElementById('dish2-title'), 24);
+    fitWidth(document.getElementById('dish3-title'), 24);
+    fitWidth(document.getElementById('vegan-title'), 24);
+    fitWidth(document.getElementById('salat-line'), 24);
+  });
+}
+
+async function init() {
+  const slug = todaySlug();
+  try {
+    const res = await fetch('/api/menu');
+    const menu = await res.json();
+    const data = menu[slug] || menu['fostudagur'];
+    if (data) render(data);
+  } catch (e) {
+    console.error('Failed to fetch menu:', e);
+  }
+  scheduleRefreshAtMidnight();
+}
+
+init();
+</script>
+</body>
+</html>
