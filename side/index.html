@@ -119,9 +119,12 @@ function renderSlides(slides) {
   bar.id = 'progress-bar';
   frame.appendChild(bar);
 
+  // Start carousel immediately so slides are never stuck invisible
+  startCarousel(frame.querySelectorAll('.slide'));
+
+  // Shrink oversized text once fonts are loaded
   document.fonts.ready.then(() => {
     frame.querySelectorAll('.dish-text').forEach(el => shrinkHeight(el, 36));
-    startCarousel(frame.querySelectorAll('.slide'));
   });
 }
 
