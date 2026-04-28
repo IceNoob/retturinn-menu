@@ -166,16 +166,22 @@ function scaleToFit() {
 scaleToFit();
 window.addEventListener('resize', scaleToFit);
 
-async function init() {
+async function init(retryDelay) {
   try {
     const res = await fetch('/api/menu');
     const menu = await res.json();
     const slides = buildSlides(menu);
-    if (slides.length) renderSlides(slides);
+    if (slides.length) {
+      renderSlides(slides);
+      scheduleRefreshAtMidnight();
+      return;
+    }
   } catch (e) {
     console.error('Failed to fetch menu:', e);
   }
-  scheduleRefreshAtMidnight();
+  // Retry on failure or empty data — doubles each attempt up to 5 minutes
+  const delay = Math.min(retryDelay || 15000, 300000);
+  setTimeout(() => init(delay * 2), delay);
 }
 
 init();

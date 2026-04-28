@@ -177,17 +177,22 @@ function scaleToFit() {
 scaleToFit();
 window.addEventListener('resize', scaleToFit);
 
-async function init() {
+async function init(retryDelay) {
   const slug = todaySlug();
   try {
     const res = await fetch('/api/menu');
     const menu = await res.json();
     const data = menu[slug] || menu['fostudagur'];
-    if (data) render(data);
+    if (data) {
+      render(data);
+      scheduleRefreshAtMidnight();
+      return;
+    }
   } catch (e) {
     console.error('Failed to fetch menu:', e);
   }
-  scheduleRefreshAtMidnight();
+  const delay = Math.min(retryDelay || 15000, 300000);
+  setTimeout(() => init(delay * 2), delay);
 }
 
 init();
